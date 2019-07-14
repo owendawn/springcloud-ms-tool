@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+
+    <title>引导页</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+
+</head>
+
+<body>
+<h1>引导页</h1>
+<h2>说明：</h2>
+<h4>子项目：</h4>
+hystrix + actuator 项目 的 http://xxx:xx/actuator/hystrix.stream 提供该服务的服务数据
+
+<h4>本项目：</h4>
+<script>
+    document.write(
+        "<a target='_blank' href='http://"+document.location.host+"/turbine.stream'>" +
+        "http://"+document.location.host+"/turbine.stream" +
+        "</a>"
+    )
+</script> 提供所有等级在册的服务的服务数据
+<br>
+<br>
+<script>
+document.write("http://"+document.location.host+"/turbine.stream?cluster=CLUSTERNAME")
+</script> 提供单一服务器的服务数据【跟本项目的配置turbine.aggregator.clusterConfig一致】
+<hr>
+<br>
+<a href="/hystrix" target="_blank">Dashboard面板</a>
+
+
+</body>
+</html>

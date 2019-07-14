@@ -1,0 +1,17 @@
+# Created by .ignore support plugin (hsz.mobi)
+/.idea/
+/EurekaServer/target/
+/EurekaServer/eurekaserver.iml
+/HystrixDashBoard/hystrixdashboard.iml
+/HystrixDashBoard/target/
+/springcloud-microservice-tools.iml
+/springcloud-ms-tool.iml
+/admin-server/admin-server.iml
+/config-server/config-server.iml
+/eureka-server/eureka-server.iml
+/gateway-server/gateway-server.iml
+/hystrix-dashboard/hystrix-dashboard.iml
+/server-module/server-module.iml
+/test-module/test-module.iml
+/zipkin-server/zipkin-server.iml
+/zuul-server/zuul-server.iml
