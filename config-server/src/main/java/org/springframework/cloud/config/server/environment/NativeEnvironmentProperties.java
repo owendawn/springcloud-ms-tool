@@ -104,7 +104,9 @@ public class NativeEnvironmentProperties implements EnvironmentRepositoryPropert
             System.out.println(Arrays.toString(root.list()));
             String finalUrl = url;
             int finalIdx = idx;
+            String rootStr=root.getAbsolutePath();
             return Stream.of(root.list())
+                    .filter(it->new File(rootStr+"/"+it).isDirectory())
                     .map(it -> finalUrl.substring(0, finalIdx) + "/" + it + finalUrl.substring(finalIdx + 2))
                     .toArray(String[]::new);
         }
