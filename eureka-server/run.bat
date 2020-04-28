@@ -1,5 +1,5 @@
 @echo off
-title Eureka-Server
+title Eureka-Server2
 
-java -jar %~dp0target/eureka-server-1.0.1.jar
+java -Xmx500m -jar %~dp0target/eureka-server-1.0.1.jar
 pause

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <routes>
-	<route  path="/config-server/**" uri="http://127.0.0.1:12346"/>
+	<route  path="/config-server1/**" uri="http://127.0.0.1:12346/"/>
+	<route  path="/config-server2/**" uri="lb://CONFIG-SERVER/"/>
+	<route  path="/admin-server2/**" uri="lb://ADMIN-SERVER/"/>
 </routes>
