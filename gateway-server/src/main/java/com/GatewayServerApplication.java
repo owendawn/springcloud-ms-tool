@@ -41,8 +41,6 @@ public class GatewayServerApplication {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
         File file=new File(modulePath + "/routes.xml");
         System.out.println("默认加载routes.xml路径："+file.getAbsolutePath());
         if(!file.exists()){
