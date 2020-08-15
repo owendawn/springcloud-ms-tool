@@ -1,5 +1,6 @@
 package com;
 
+import org.slf4j.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -40,7 +41,18 @@ public class GatewayServerApplication {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        DomXmlUtils domXmlUtils = new DomXmlUtils(new File(modulePath + "/routes.xml"));
+
+
+        File file=new File(modulePath + "/routes.xml");
+        System.out.println("默认加载routes.xml路径："+file.getAbsolutePath());
+        if(!file.exists()){
+            String jarPath= System.getProperty("java.class.path").replaceAll("\\\\","/");
+//            System.out.println("jar路径："+jarPath);
+            String jarNearPath=jarPath.substring(0,jarPath.lastIndexOf("/"))+"/routes.xml";
+            System.out.println("默认routes.xml文件不存在，加载jar同路径下文件："+jarNearPath);
+            file=  new File(jarNearPath);
+        }
+        DomXmlUtils domXmlUtils = new DomXmlUtils(file);
         domXmlUtils.parseXml(new DomXmlUtils.BaseDomXmlParser<Object>() {
             @Override
             protected Object parse(Document doc) {
