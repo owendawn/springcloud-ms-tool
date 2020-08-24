@@ -1,6 +1,9 @@
 package com;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -27,6 +30,9 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 
 @SpringBootApplication
 public class GatewayServerApplication {
+    private Logger logger= LoggerFactory.getLogger(GatewayServerApplication.class);
+    @Value("${gateway.routes.path}")
+    private String gatewayPath;
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder routeLocatorBuilder) {
         RouteLocatorBuilder.Builder builder = routeLocatorBuilder.routes();
@@ -35,38 +41,60 @@ public class GatewayServerApplication {
     }
 
     private void getRoutesFromXml(RouteLocatorBuilder.Builder builder) {
-        String modulePath = null;
-        try {
-            modulePath = new File("").getCanonicalPath();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        File file=new File(modulePath + "/routes.xml");
-        System.out.println("默认加载routes.xml路径："+file.getAbsolutePath());
-        if(!file.exists()){
-            String jarPath= System.getProperty("java.class.path").replaceAll("\\\\","/");
-//            System.out.println("jar路径："+jarPath);
-            String jarNearPath=jarPath.substring(0,jarPath.lastIndexOf("/"))+"/routes.xml";
-            System.out.println("默认routes.xml文件不存在，加载jar同路径下文件："+jarNearPath);
-            file=  new File(jarNearPath);
-        }
-        DomXmlUtils domXmlUtils = new DomXmlUtils(file);
-        domXmlUtils.parseXml(new DomXmlUtils.BaseDomXmlParser<Object>() {
-            @Override
-            protected Object parse(Document doc) {
-                Element root = doc.getDocumentElement();
-                NodeList routes = root.getElementsByTagName("route");
-                for (int i = 0; i < routes.getLength(); i++) {
-                    Element route = (Element) routes.item(i);
-                    builder.route(r -> r.path(route.getAttribute("path"))
-                                    .filters (f -> f.stripPrefix (1))
-                                    .uri(route.getAttribute("uri"))
-                                    .id(UUID.randomUUID().toString())
-                    );
-                }
-                return null;
+        File file=null;
+        if(StringUtils.isNotEmpty(gatewayPath)){
+            file=new File(gatewayPath + "/routes.xml");
+            if(file.exists()){
+                logger.info("加载用户自定义配置routes.xml路径："+file.getAbsolutePath());
+            }else{
+                file=null;
             }
-        });
+        }
+        if(file==null) {
+            String modulePath = null;
+            try {
+                modulePath = new File("").getCanonicalPath();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            file = new File(modulePath + "/routes.xml");
+            if(file.exists()) {
+                logger.info("加载默认routes.xml路径：" + file.getAbsolutePath());
+            }else{
+                file=null;
+            }
+        }
+        if(file==null){
+            String jarPath= System.getProperty("java.class.path").replaceAll("\\\\","/");
+            String jarNearPath=jarPath.substring(0,jarPath.lastIndexOf("/"))+"/routes.xml";
+            file=  new File(jarNearPath);
+            if(file.exists()) {
+                logger.info("默认routes.xml文件不存在，加载jar同路径下文件：" + jarNearPath);
+            }else{
+                file=null;
+            }
+        }
+        if(file==null){
+            logger.error("无法加载routes.xml");
+        }else {
+            DomXmlUtils domXmlUtils = new DomXmlUtils(file);
+            domXmlUtils.parseXml(new DomXmlUtils.BaseDomXmlParser<Object>() {
+                @Override
+                protected Object parse(Document doc) {
+                    Element root = doc.getDocumentElement();
+                    NodeList routes = root.getElementsByTagName("route");
+                    for (int i = 0; i < routes.getLength(); i++) {
+                        Element route = (Element) routes.item(i);
+                        builder.route(r -> r.path(route.getAttribute("path"))
+                                .filters(f -> f.stripPrefix(1))
+                                .uri(route.getAttribute("uri"))
+                                .id(UUID.randomUUID().toString())
+                        );
+                    }
+                    return null;
+                }
+            });
+        }
     }
 
 
