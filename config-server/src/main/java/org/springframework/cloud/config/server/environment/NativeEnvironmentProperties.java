@@ -72,12 +72,12 @@ public class NativeEnvironmentProperties implements EnvironmentRepositoryPropert
 
     public void setSearchLocations(String[] searchLocations) {
         List<String> locations = new ArrayList<>();
-        String modulePath = null;
-        try {
-            modulePath = new File("").getCanonicalPath();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        String modulePath = null;
+//        try {
+//            modulePath = new File("").getCanonicalPath();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         for (String location : searchLocations) {
             if (location.contains("*")) {
                 Stream.of(getPathByIndistinct(location)).forEach(it -> {
